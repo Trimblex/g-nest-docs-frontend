@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 517">
+  <!-- 浅灰渐变背景 -->
+  <rect width="400" height="517" fill="#fafbfc"/>
+  <!-- 企业标识区 -->
+  <text x="40" y="40" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1e3d59">某某科技有限公司</text>
+  <line x1="40" y1="45" x2="360" y2="45" stroke="#1e3d59" stroke-width="1" opacity="0.5"/>
+  <!-- 联系信息（图标序列优化） -->
+  <g transform="translate(40 60)">
+    <rect width="8" height="8" fill="#1890ff" opacity="0.7"/>
+    <text x="15" y="8" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">上海市浦东新区张江路456号</text>
+    <rect y="15" width="8" height="8" fill="#1890ff" opacity="0.7"/>
+    <text x="15" y="23" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">上海市，201203</text>
+    <rect y="30" width="8" height="8" fill="#1890ff" opacity="0.7"/>
+    <text x="15" y="38" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">联系电话：(021) 6543-9876</text>
+    <rect y="45" width="8" height="8" fill="#1890ff" opacity="0.7"/>
+    <text x="15" y="53" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">电子邮箱：service@example.com</text>
+  </g>
+  <!-- 日期印章效果 -->
+  <rect x="40" y="135" width="120" height="20" fill="#e6f7ff" rx="3"/>
+  <text x="48" y="148" font-family="Microsoft YaHei" font-size="10" fill="#1e3d59">二〇二四年九月二十四日</text>
+  <!-- 正式称谓 -->
+  <text x="40" y="185" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">尊敬的客户经理：</text>
+  <!-- 正文段落（左侧装饰线强化） -->
+  <rect x="40" y="205" width="2" height="150" fill="#1890ff" opacity="0.5"/>
+  <text x="50" y="220" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">
+    感谢贵司对我司业务的高度关注与支持。
+  </text>
+  <text x="50" y="245" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">
+    现向贵司呈递最新产品方案及行业解决方案白皮书。
+  </text>
+  <text x="50" y="270" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">
+    我司核心团队拥有十五年以上的行业实施经验。
+  </text>
+  <text x="50" y="295" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">
+    期待与贵司就合作事宜进行深入交流探讨。
+  </text>
+  <text x="50" y="320" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">
+    欢迎随时致电咨询热线或通过企业微信联系我们。
+  </text>
+  <!-- 签章区（增强商务感） -->
+  <text x="40" y="380" font-family="Microsoft YaHei" font-size="10" fill="#2c3e50">此致</text>
+  <rect x="40" y="420" width="120" height="40" fill="#f0faff" rx="3"/>
+  <text x="48" y="440" font-family="Microsoft YaHei" font-size="10" fill="#1e3d59" font-weight="bold">
+    某某科技有限公司
+    <tspan x="48" dy="15" font-size="8">（电子签章）</tspan>
+  </text>
+  <!-- 企业信息水印 -->
+  <text x="200" y="505" font-family="Microsoft YaHei" font-size="8" fill="#e8e8e8" text-anchor="middle">
+    沪ICP备20241234号 | 沪公网安备 31011502001234号
+  </text>
+</svg>

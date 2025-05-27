@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 517">
+  <!-- 白色背景 -->
+  <rect width="400" height="517" fill="white"/>
+  <!-- 信头信息（右对齐优化） -->
+  <text x="40" y="40" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold">张三</text>
+  <text x="40" y="60" font-family="Microsoft YaHei, sans-serif" font-size="11">中山路123号</text>
+  <text x="40" y="75" font-family="Microsoft YaHei, sans-serif" font-size="11">上海市，200000</text>
+  <text x="40" y="90" font-family="Microsoft YaHei, sans-serif" font-size="11">电话：(021) 6543-9876</text>
+  <text x="40" y="105" font-family="Microsoft YaHei, sans-serif" font-size="11">邮箱：zhangsan@example.com</text>
+  <!-- 日期（中文格式） -->
+  <text x="40" y="140" font-family="Microsoft YaHei, sans-serif" font-size="11">2024年9月24日</text>
+  <!-- 收件方信息（添加「致：」标识） -->
+  <text x="40" y="180" font-family="Microsoft YaHei, sans-serif" font-size="11">致：人力资源部经理</text>
+  <text x="40" y="195" font-family="Microsoft YaHei, sans-serif" font-size="11">上海创新科技有限公司</text>
+  <text x="40" y="210" font-family="Microsoft YaHei, sans-serif" font-size="11">浦东新区张江路456号</text>
+  <text x="40" y="225" font-family="Microsoft YaHei, sans-serif" font-size="11">上海市，201203</text>
+  <!-- 正式称呼（添加下划线强调） -->
+  <text x="40" y="265" font-family="Microsoft YaHei, sans-serif" font-size="11">
+    <tspan fill="transparent" text-decoration="underline">__________</tspan>尊敬的经理：
+  </text>
+  <!-- 正文参考线（颜色淡化） -->
+  <line x1="40" y1="300" x2="360" y2="300" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="40" y1="320" x2="360" y2="320" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="40" y1="340" x2="360" y2="340" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="40" y1="360" x2="360" y2="360" stroke="#EEEEEE" stroke-width="1"/>
+  <line x1="40" y1="380" x2="360" y2="380" stroke="#EEEEEE" stroke-width="1"/>
+  <!-- 结束格式（传统空两格写法） -->
+  <text x="40" y="440" font-family="Microsoft YaHei, sans-serif" font-size="11">　　此致</text>
+  <text x="120" y="480" font-family="Microsoft YaHei, sans-serif" font-size="11" font-weight="bold">申请人：张三（签名）</text>
+</svg>

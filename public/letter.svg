@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 517">
+  <!-- 白色背景 -->
+  <rect width="400" height="517" fill="white"/>
+  <!-- 页眉 -->
+  <text x="40" y="40" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold">乐队名称</text>
+  <text x="40" y="60" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#ff4444">20XX年9月24日</text>
+  <!-- 问候语 -->
+  <text x="40" y="100" font-family="Microsoft YaHei, sans-serif" font-size="22">亲爱的乐迷朋友：</text>
+  <!-- 开场白 -->
+  <text x="40" y="140" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold">首先，请接受我们诚挚的感谢！</text>
+  <!-- 正文段落（适配中文短句结构） -->
+  <text x="40" y="180" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    衷心感谢您一直以来对乐队的大力支持。
+  </text>
+  <text x="40" y="210" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    我们非常激动地宣布，全新专辑即将正式发布。
+  </text>
+  <text x="40" y="240" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    您将优先收听最新单曲及创作幕后故事。
+  </text>
+  <text x="40" y="280" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    我们正在筹备专属忠实乐迷的特别企划。
+  </text>
+  <text x="40" y="310" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    请持续关注我们即将发布的独家内容与动态更新。
+  </text>
+  <text x="40" y="340" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#666666">
+    期待在下一场演唱会现场与您相见。
+  </text>
+  <!-- 结束语 -->
+  <text x="40" y="400" font-family="Microsoft YaHei, sans-serif" font-size="11">此致</text>
+  <!-- 签名 -->
+  <text x="40" y="440" font-family="Microsoft YaHei, sans-serif" font-size="11">乐队全体成员 敬上</text>
+</svg>
