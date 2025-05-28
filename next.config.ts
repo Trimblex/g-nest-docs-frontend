@@ -4,6 +4,8 @@ const getAutoBaseUrl = () => {
   // 本地开发强制使用 localhost
   if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000";
+  } else if (process.env.NODE_ENV === "production") {
+    return "http://162.14.126.179";
   }
   // 获取 Vercel 全环境统一域名
   const vercelUrl = process.env.VERCEL_URL;

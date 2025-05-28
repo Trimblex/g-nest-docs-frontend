@@ -66,15 +66,16 @@ export function Room({ children }: RoomProps) {
       try {
         const list = await getUsers(user?.currentOrgId!, token!);
         setUsers(list);
-      } catch {
+      } catch (error: Error | any) {
         toast.error("获取用户信息失败");
+        console.log(error);
       }
     };
   }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, []);
   return (
     <LiveblocksProvider
       throttle={16}
