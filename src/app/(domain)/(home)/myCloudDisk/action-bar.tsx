@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GridIcon, ListIcon, RefreshCwIcon } from "lucide-react";
+import { GridIcon, ListIcon, RefreshCwIcon, X } from "lucide-react";
 import { UploadFileDialog } from "./upload-file-dialog";
 import { CreateFolderDialog } from "./create-folder-dialog";
 
@@ -53,13 +53,26 @@ export const ActionBar = ({
           className="flex-1"
         />
         <CreateFolderDialog onCreate={onCreateFolder} />
-        <Input
-          placeholder="筛选结果..."
-          className=" w-96 max-w-[300px]"
-          value={searchTerm}
-          autoComplete="filter-result"
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
+        <div className="relative">
+          <Input
+            placeholder="筛选结果..."
+            className="w-96 max-w-[300px] pr-10" // 添加右侧padding
+            value={searchTerm}
+            autoComplete="filter-result"
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+          {searchTerm && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+              onClick={() => onSearchChange("")}
+              aria-label="清空搜索"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <Button
           variant="outline"
           onClick={onRefresh}

@@ -476,8 +476,8 @@ export const CustomUserButton = () => {
                   <Image
                     src={user.avatarUrl}
                     alt="用户头像"
-                    width={32}
-                    height={32}
+                    width={40}
+                    height={40}
                     className="rounded-full object-cover border-2 group-hover:border-primary transition-all"
                     priority
                   />

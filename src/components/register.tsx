@@ -185,7 +185,9 @@ export function Register({
                 <Image
                   src={logo}
                   alt="Logo"
-                  className="w-24 h-24 mx-auto rounded-full shadow-xl border-4 border-white/50 hover:scale-105 transition-transform"
+                  width={80}
+                  height={80}
+                  className="mx-auto rounded-full shadow-xl border-4 border-white/50 hover:scale-105 transition-transform"
                 />
                 <div className="absolute inset-0 rounded-full border-2 border-purple-300/50 animate-glow-logo" />
               </div>

@@ -54,6 +54,8 @@ import { OrgSwitcher } from "@/components/org-switcher";
 import { CustomUserButton } from "@/components/custom-user-button";
 import axios from "@/config/axiosConfig";
 import Error from "next/error";
+import { GNestResponse } from "@/interface/common";
+import { AxiosError } from "axios";
 
 interface NavbarProps {
   data: DocumentInfoVO;
@@ -124,9 +126,8 @@ export const Navbar = ({ data }: NavbarProps) => {
         toast.success("新建文档成功");
         router.push(`/documents/${res.data.id}`);
       })
-      .catch((error: Error) => {
-        toast.error("新建文档失败");
-        console.error(error);
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
       });
   };
 

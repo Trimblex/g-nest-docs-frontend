@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 import axios from "@/config/axiosConfig";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { GNestResponse } from "@/interface/common";
 export default function Home() {
   const [search] = useSearchParam();
   const { currentOrg, switchOrg } = useOrg();
@@ -28,7 +30,9 @@ export default function Home() {
         setNextCursor(res.data.nextCursor);
         setHasMore(res.data.hasMore);
       })
-      .catch((err) => toast.error(err.message));
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      });
   }, [currentOrg, search]);
 
   const loadMore = (cursor: string, pageSize: number) => {
@@ -45,7 +49,9 @@ export default function Home() {
         setNextCursor(res.data.nextCursor);
         setHasMore(res.data.hasMore);
       })
-      .catch((err) => toast.error(err.message));
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      });
   };
 
   useEffect(() => {

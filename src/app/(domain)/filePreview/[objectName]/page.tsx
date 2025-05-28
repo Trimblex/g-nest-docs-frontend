@@ -5,20 +5,18 @@ import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "@/config/axiosConfig";
+
 export default function FilePreviewPage() {
   const params = useParams();
   const [previewUrl, setPreviewUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [iframeLoading, setIframeLoading] = useState(true);
   const [error, setError] = useState("");
-  // 验证用户
-  // 安全获取文件路径
+
   const fetchFilePath = async (objectName: string) => {
     try {
-      const response = await axios.post(`/files/getPreviewUrl`, {
-        objectName,
-      });
-
-      return await response.data;
+      const response = await axios.post(`/files/getPreviewUrl`, { objectName });
+      return response.data;
     } catch (err) {
       toast.error("文件获取失败");
       throw err;
@@ -29,36 +27,37 @@ export default function FilePreviewPage() {
     const loadPreview = async () => {
       try {
         const objectName = decodeURIComponent(params.objectName as string);
-
         const res = await fetchFilePath(objectName);
         setPreviewUrl(res);
-        setError("");
-      } catch (err: Error | any) {
+      } catch (err: any) {
         setError(err.message || "预览加载失败");
-        toast.error(err.message);
       } finally {
-        setIsLoading(false);
+        setIsInitialLoading(false);
       }
     };
 
     loadPreview();
   }, [params.objectName]);
 
+  const showLoader = isInitialLoading || (previewUrl && iframeLoading);
+
   return (
-    <div className="h-[calc(100vh)] bg-gray-50 relative">
-      {/* 加载状态 */}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+    // 修改1：外层容器添加overflow-hidden防止页面滚动
+    <div className="h-screen bg-gray-50 relative overflow-hidden">
+      {/* 修改2：加载层添加overflow-hidden */}
+      {showLoader && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50 overflow-hidden">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-lg text-muted-foreground">正在验证文件权限...</p>
+            <p className="text-lg text-muted-foreground">
+              {isInitialLoading ? "正在准备预览..." : "正在加载文件内容..."}
+            </p>
           </div>
         </div>
       )}
 
-      {/* 错误状态 */}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50 overflow-hidden">
           <div className="text-center p-4 max-w-md">
             <div className="text-2xl mb-2">⚠️ 预览不可用</div>
             <p className="text-muted-foreground">{error}</p>
@@ -72,24 +71,23 @@ export default function FilePreviewPage() {
         </div>
       )}
 
-      {/* 预览内容 */}
+      {/* 修改3：iframe容器添加overflow-hidden */}
       {!error && previewUrl && (
-        <div className="h-full w-full">
+        <div className="h-full w-full overflow-hidden">
           <iframe
             key={previewUrl}
             src={previewUrl}
-            className="h-full w-full border-none"
+            className="h-full w-full border-none overflow-hidden"
             sandbox="allow-scripts allow-same-origin"
             allow="accelerometer; encrypted-media; gyroscope;"
             allowFullScreen
+            onLoad={() => setIframeLoading(false)}
+            onError={() => setError("内容加载失败，请尝试刷新")}
+            // 修改4：强制隐藏滚动条的终极解决方案
+            style={{ overflow: "hidden" }}
           />
         </div>
       )}
-
-      {/* 安全提示 */}
-      {/* <div className="absolute bottom-0 left-0 right-0 bg-yellow-50 p-2 text-center text-sm text-yellow-800">
-        安全提示：文件内容来自外部服务，请勿执行下载或分享操作
-      </div> */}
     </div>
   );
 }

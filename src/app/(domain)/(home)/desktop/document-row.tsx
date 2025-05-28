@@ -4,7 +4,7 @@ import { SiGoogledocs } from "react-icons/si";
 import { Building2Icon, CircleUserIcon } from "lucide-react";
 import { format } from "date-fns";
 import { DocumentMenu } from "./document-menu";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface DocumentRowProps {
   document: DocumentInfoVO;
@@ -12,10 +12,25 @@ interface DocumentRowProps {
 
 export const DocumentRow = ({ document }: DocumentRowProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const preserveQueryParams = () => {
+    // 克隆现有的查询参数
+    const newParams = new URLSearchParams(searchParams.toString());
+
+    // 如果当前没有org参数且文档有organizationId，则添加
+    if (!newParams.has("org") && document.organizationId) {
+      newParams.set("org", document.organizationId);
+    }
+
+    // 拼接新的查询字符串
+    const queryString = newParams.toString();
+    return `/documents/${document.id}${queryString ? `?${queryString}` : ""}`;
+  };
 
   return (
     <TableRow
-      onDoubleClick={() => router.push(`/documents/${document.id}`)}
+      onDoubleClick={() => router.push(preserveQueryParams())}
       className="cursor-pointer"
     >
       <TableCell className="w-[59px]">

@@ -3,7 +3,7 @@ interface DocumentInfoVO {
   title: string;
   content: string;
   ownerId: string;
-  organizationId: string;
+  organizationId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

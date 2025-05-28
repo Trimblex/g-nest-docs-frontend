@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import {
   ClientSideSuspense,
@@ -15,6 +16,7 @@ export const Avatars = () => {
     </ClientSideSuspense>
   );
 };
+
 const AvatarStack = () => {
   const users = useOthers();
   const currentUser = useSelf();
@@ -45,7 +47,27 @@ interface AvatarProps {
   name: string;
 }
 
+const generateInitials = (name: string) => {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.length > 0 ? name[0].toUpperCase() : "";
+};
+
+const generateColor = (name: string) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return `hsl(${hash % 360}, 50%, 50%)`;
+};
+
 const Avatar = ({ src, name }: AvatarProps) => {
+  const [hasError, setHasError] = useState(!src);
+  const initials = generateInitials(name);
+  const color = generateColor(name);
+
   return (
     <div
       style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
@@ -54,7 +76,23 @@ const Avatar = ({ src, name }: AvatarProps) => {
       <div className="opacity-0 group-hover:opacity-100 absolute top-full py-1 px-2 text-white text-xs rounded-lg mt-2.5 z-10 bg-black whitespace-nowrap transition-opacity">
         {name}
       </div>
-      <Image src={src} alt={name} className="size-full rounded-b-full" />
+      {hasError ? (
+        <div
+          className="size-full rounded-full flex items-center justify-center text-white font-bold"
+          style={{ backgroundColor: color }}
+        >
+          {initials}
+        </div>
+      ) : (
+        <Image
+          src={src}
+          alt={name}
+          width={AVATAR_SIZE}
+          height={AVATAR_SIZE}
+          className="size-full rounded-full"
+          onError={() => setHasError(true)}
+        />
+      )}
     </div>
   );
 };

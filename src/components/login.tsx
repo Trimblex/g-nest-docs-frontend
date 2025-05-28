@@ -146,7 +146,7 @@ export function Login({
               alt="Logo"
               width={64}
               height={64}
-              className="w-16 h-16 mx-auto rounded-full shadow-md border-2 border-white/50"
+              className="mx-auto rounded-full shadow-md border-2 border-white/50"
               loading="lazy"
             />
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>

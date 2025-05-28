@@ -1,20 +1,12 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback } from "react";
 import {
   LiveblocksProvider,
   RoomProvider,
   ClientSideSuspense,
 } from "@liveblocks/react/suspense";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
 import { FullScreenLoader } from "@/components/fullscreen-loader";
-import { getUsers } from "./actions";
-import { toast } from "sonner";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
 
 import { useAuth } from "@/providers/auth-context";
@@ -25,77 +17,28 @@ type User = {
   name: string;
   avatar: string;
 };
-
 interface RoomProps {
+  users: User[];
+  document: DocumentInfoVO;
   children: ReactNode;
 }
-export function Room({ children }: RoomProps) {
-  const params = useParams();
-  const { user, token } = useAuth();
-  const searchParams = useSearchParams();
+export function Room({ children, document, users }: RoomProps) {
+  const { user } = useAuth();
 
-  const pathname = usePathname();
-  const router = useRouter();
+  const authEndpoint = useCallback(async () => {
+    const endpoint = "/api/liveblocks-auth";
 
-  useEffect(() => {
-    const checkOrgChanged = async () => {
-      const curOrgId = searchParams.get("org");
-      if (curOrgId) {
-        const document = await axios
-          .get(`/documents/${params.documentId}`)
-          .then((res) => {
-            return res.data;
-          })
-          .catch((err: Error) => {
-            toast.error("获取文档失败");
-            console.log(err);
-            return null;
-          });
-        if (document.organizationId != curOrgId) {
-          router.push("/desktop/" + (params.path ?? ""));
-        }
-      }
-    };
-    checkOrgChanged();
-  }, [searchParams, pathname, router, params.path, params.documentId]);
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify({ document, user }),
+    });
+    return await response.json();
+  }, [user]);
 
-  const [users, setUsers] = useState<User[]>([]);
-
-  const fetchUsers = useMemo(() => {
-    return async () => {
-      try {
-        const list = await getUsers(user?.currentOrgId!, token!);
-        setUsers(list);
-      } catch (error: Error | any) {
-        toast.error("获取用户信息失败");
-        console.log(error);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
   return (
     <LiveblocksProvider
       throttle={16}
-      authEndpoint={async () => {
-        const endpoint = "/api/liveblocks-auth";
-        const document = await axios
-          .get(`/documents/${params.documentId}`)
-          .then((res) => {
-            return res.data;
-          })
-          .catch((err: Error) => {
-            toast.error(err.message);
-            return null;
-          });
-        const response = await fetch(endpoint, {
-          method: "POST",
-          body: JSON.stringify({ document, user }),
-        });
-        return await response.json();
-      }}
+      authEndpoint={authEndpoint}
       resolveUsers={({ userIds }) => {
         return userIds.map(
           (userId) => users.find((user) => user.id === userId) ?? undefined
@@ -124,7 +67,7 @@ export function Room({ children }: RoomProps) {
       }}
     >
       <RoomProvider
-        id={params.documentId as string}
+        id={document?.id as string}
         initialStorage={{
           leftMargin: LEFT_MARGIN_DEFAULT,
           rightMargin: RIGHT_MARGIN_DEFAULT,

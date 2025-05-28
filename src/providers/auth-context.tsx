@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "@/config/axiosConfig";
 import { UserInfoVO } from "@/interface/users";
+import { useRouter } from "next/navigation";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState<string>();
   const [user, setUser] = useState<AuthContextType["user"]>();
+  const router = useRouter();
   // Token验证方法
   const validateToken = async (token: string) => {
     try {
@@ -89,6 +91,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem("authToken");
       setToken(undefined);
       setIsAuthenticated(false);
+      setUser(undefined);
+      router.replace("/login");
     }
   };
 

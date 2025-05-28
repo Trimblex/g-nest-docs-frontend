@@ -14,6 +14,8 @@ import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
 import { toast } from "sonner";
 import axios from "@/config/axiosConfig";
+import { GNestResponse } from "@/interface/common";
+import { AxiosError } from "axios";
 
 interface RenameDialogProps {
   documentId: string;
@@ -35,7 +37,9 @@ export const RenameDialog = ({
     setIsRenaming(true);
     axios
       .post(`/documents/${documentId}`, { title: title.trim() || "未命名" })
-      .catch(() => toast.error("似乎出错了"))
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      })
       .then(() => toast.success("重命名成功"))
       .finally(() => {
         setIsRenaming(false);

@@ -42,7 +42,9 @@ export const OrgMembersManagement = ({
   useEffect(() => {
     const loadMembers = async () => {
       try {
-        const res = await axios.get(`/org/getMembers/${org.id}`);
+        const res = await axios.post(`/org/getMembers`, {
+          orgId: org.id,
+        });
         setMembers(res.data);
       } finally {
         setIsLoading(false);

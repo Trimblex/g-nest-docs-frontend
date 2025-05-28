@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "@/config/axiosConfig";
+import { AxiosError } from "axios";
+import { GNestResponse } from "@/interface/common";
 
 export const TemplateGallery = () => {
   const router = useRouter();
@@ -29,7 +31,9 @@ export const TemplateGallery = () => {
         toast.success("新建文档成功");
         router.push(`/documents/${res.data.id}`);
       })
-      .catch((err) => toast.error(err.message));
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      });
   };
   return (
     <div className="bg-[#F1F3F4]">

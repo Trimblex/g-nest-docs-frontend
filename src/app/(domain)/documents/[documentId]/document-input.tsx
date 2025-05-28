@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { useStatus } from "@liveblocks/react";
 import { LoaderIcon } from "lucide-react";
 import axios from "@/config/axiosConfig";
+import { GNestResponse } from "@/interface/common";
+import { AxiosError } from "axios";
 
 interface DocumentInputProps {
   title: string;
@@ -33,8 +35,8 @@ export const DocumentInput = ({ title, id }: DocumentInputProps) => {
         toast.success("重命名成功");
         setIsEditing(false);
       })
-      .catch(() => {
-        toast.error("更新文档标题失败");
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
       })
       .finally(() => setIsPending(false));
   };

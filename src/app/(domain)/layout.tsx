@@ -1,8 +1,6 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CustomClientProvider } from "@/components/custom-client-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Suspense } from "react";
 
 export default function DomainLayout({
   children,
@@ -13,9 +11,7 @@ export default function DomainLayout({
     <NuqsAdapter>
       <CustomClientProvider>
         <Toaster />
-        <ScrollArea className="relative h-full overflow-y-scroll">
-          {children}
-        </ScrollArea>
+        {children}
       </CustomClientProvider>
     </NuqsAdapter>
   );

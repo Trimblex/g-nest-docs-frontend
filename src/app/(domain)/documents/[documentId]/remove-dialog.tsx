@@ -15,6 +15,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axios from "@/config/axiosConfig";
+import { GNestResponse } from "@/interface/common";
+import { AxiosError } from "axios";
 
 interface RemoveDialogProps {
   documentId: string;
@@ -32,8 +34,8 @@ export const RemoveDialog = ({ documentId, children }: RemoveDialogProps) => {
         toast.success("删除成功");
         router.push("/desktop");
       })
-      .catch(() => {
-        toast.error("删除失败");
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
       })
       .finally(() => setIsRemoving(false));
   };
