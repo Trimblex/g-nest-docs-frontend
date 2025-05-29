@@ -5,19 +5,6 @@ const liveblocks = new Liveblocks({
 export async function POST(req: Request) {
   const { document, user } = await req.json();
 
-  // if (!document) {
-  //   return new Response("未认证document", { status: 404 });
-  // }
-
-  // const isOwner = document.ownerId === user.id;
-  // const isInOrganization = !!(
-  //   document.organizationId && document.organizationId === user.currentOrgId
-  // );
-
-  // if (!isOwner && !isInOrganization) {
-  //   return new Response("未认证isOwner和isInOrganization", { status: 401 });
-  // }
-
   const name = user.username ?? user.email ?? "匿名";
   const nameToNumber = name
     .split("")

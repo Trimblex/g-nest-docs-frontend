@@ -26,7 +26,7 @@ export function Room({ children, document, users }: RoomProps) {
   const { user } = useAuth();
 
   const authEndpoint = useCallback(async () => {
-    const endpoint = "/api/liveblocks-auth";
+    const endpoint = "/apiLocal/liveblocks-auth";
 
     const response = await fetch(endpoint, {
       method: "POST",

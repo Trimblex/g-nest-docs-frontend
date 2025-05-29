@@ -4,7 +4,7 @@ module.exports = {
       name: "g-nest-frontend",
       script: "npm",
       args: "start",
-      cwd: "/home/js/g-nest-frontend",
+      cwd: "/www/wwwroot/g-nest/g-nest-frontend",
       env: {
         NODE_ENV: "production",
       },
