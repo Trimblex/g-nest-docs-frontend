@@ -60,19 +60,11 @@ export const OrgMembersManagement = ({
     }
 
     try {
-      await axios.post(
-        `/org/invite`,
-        {
-          orgId: org.id,
-          emails: emailInput.split(/[,\s]+/),
-          role,
-        },
-        {
-          headers: {
-            "X-Frontend-Host": process.env.NEXT_PUBLIC_BASE_URL, // 自动携带当前前端域名和端口
-          },
-        }
-      );
+      await axios.post(`/org/invite`, {
+        orgId: org.id,
+        emails: emailInput.split(/[,\s]+/),
+        role,
+      });
       setEmailInput("");
       await refreshOrgs();
       toast.success("🎉 邀请已发送", {

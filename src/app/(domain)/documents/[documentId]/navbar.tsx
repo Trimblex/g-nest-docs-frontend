@@ -53,7 +53,6 @@ import WordImporter from "./word-import";
 import { OrgSwitcher } from "@/components/org-switcher";
 import { CustomUserButton } from "@/components/custom-user-button";
 import axios from "@/config/axiosConfig";
-import Error from "next/error";
 import { GNestResponse } from "@/interface/common";
 import { AxiosError } from "axios";
 

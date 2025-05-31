@@ -27,8 +27,8 @@ import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { Threads } from "./threads";
 import { LEFT_MARGIN_DEFAULT } from "@/constants/margins";
 
-import Mention from "@tiptap/extension-mention";
-import suggestion from "./suggestion";
+// import Mention from "@tiptap/extension-mention";
+// import suggestion from "./suggestion";
 interface EditorProps {
   initialContent?: string | undefined;
 }
@@ -80,12 +80,12 @@ const Editor = ({ initialContent }: EditorProps) => {
       },
     },
     extensions: [
-      Mention.configure({
-        HTMLAttributes: {
-          class: "mention",
-        },
-        suggestion,
-      }),
+      // Mention.configure({
+      //   HTMLAttributes: {
+      //     class: "mention",
+      //   },
+      //   suggestion,
+      // }),
       StarterKit.configure({ history: false }),
       liveblocks,
       lineHeightExtension.configure({
