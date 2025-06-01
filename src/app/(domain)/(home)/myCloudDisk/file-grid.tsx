@@ -14,6 +14,7 @@ export const FileGrid = ({
   onFolderClick,
   pathHierarchy,
   onMove,
+  onDownload,
   hasMore,
   selectedIds,
   onSelect,
@@ -31,6 +32,7 @@ export const FileGrid = ({
   onFolderClick: (id: string) => void;
   pathHierarchy: Array<{ id: string; name: string }>;
   onMove: (ids: string[], targetId: string) => void;
+  onDownload: (fileIds: string[]) => void;
   hasMore: boolean;
   selectedIds: string[];
   onSelect: (fileId: string, e: React.MouseEvent) => void;
@@ -50,8 +52,10 @@ export const FileGrid = ({
               onFolderClick={onFolderClick}
               isSelected={selectedIds.includes(file.id)}
               onClick={onSelect}
+              onDownload={onDownload}
               pathHierarchy={pathHierarchy}
               onMove={onMove}
+              selectedIds={selectedIds}
             />
           ))}
       </div>

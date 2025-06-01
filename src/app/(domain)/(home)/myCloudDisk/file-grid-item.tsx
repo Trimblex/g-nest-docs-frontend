@@ -29,7 +29,9 @@ export const FileGridItem = ({
   onFolderClick,
   isSelected,
   onClick,
+  onDownload,
   onMove,
+  selectedIds,
 }: {
   file: FileInfoVO;
   pathHierarchy: Array<{ id: string; name: string }>;
@@ -42,8 +44,10 @@ export const FileGridItem = ({
   onDelete: (id: string[]) => void;
   onFolderClick: (id: string) => void;
   isSelected: boolean;
+  onDownload: (fileIds: string[]) => void;
   onClick: (fileId: string, e: React.MouseEvent) => void;
   onMove: (ids: string[], targetId: string) => void;
+  selectedIds: string[];
 }) => {
   const [isRenaming, setIsRenaming] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -89,7 +93,7 @@ export const FileGridItem = ({
     pendingMove,
     handleConfirmMove,
     setPendingMove,
-  } = useDragAndDrop(file, onMove);
+  } = useDragAndDrop(file, selectedIds, onMove, pathHierarchy);
 
   const handleContextMenu = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
@@ -135,7 +139,11 @@ export const FileGridItem = ({
             "bg-background/80 hover:bg-background",
             isSelected ? "border-primary bg-primary/10 " : "border-muted/30",
             isOver && "bg-accent/20",
-            isDragging && "opacity-60 scale-95"
+            isDragging && "opacity-60 scale-95",
+            selectedIds.includes(file.id) &&
+              selectedIds.length > 1 &&
+              "border-2 border-blue-500", // 多选时高亮边框
+            isDragging && selectedIds.includes(file.id) && "opacity-30"
           )}
         >
           {/* 顶部操作按钮 */}
@@ -152,6 +160,7 @@ export const FileGridItem = ({
                 onDelete={() => setDeleteDialogOpen(true)}
                 onShare={() => setShareDialogOpen(true)}
                 onMove={() => setMoveDialogOpen(true)}
+                onDownload={onDownload}
                 onDetail={() => setDetailInfoDialogOpen(true)}
               />
             </DropdownMenu>
@@ -235,6 +244,7 @@ export const FileGridItem = ({
           onDelete={() => setDeleteDialogOpen(true)}
           onShare={() => setShareDialogOpen(true)}
           onMove={() => setMoveDialogOpen(true)}
+          onDownload={onDownload}
           onDetail={() => setDetailInfoDialogOpen(true)}
         />
       </DropdownMenu>

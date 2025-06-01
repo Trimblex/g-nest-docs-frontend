@@ -20,6 +20,7 @@ export const FileTable = ({
   onFolderClick,
   pathHierarchy,
   onMove,
+  onDownload,
   hasMore,
   selectedIds,
   onSelect,
@@ -37,6 +38,7 @@ export const FileTable = ({
   onFolderClick: (id: string) => void;
   pathHierarchy: Array<{ id: string; name: string }>;
   onMove: (ids: string[], parentId: string) => void;
+  onDownload: (fileId: string[]) => void;
   hasMore: boolean;
   selectedIds: string[];
   onSelect: (fileId: string, e: React.MouseEvent) => void;
@@ -70,6 +72,8 @@ export const FileTable = ({
                 onClick={onSelect}
                 pathHierarchy={pathHierarchy}
                 onMove={onMove}
+                onDownload={onDownload}
+                selectedIds={selectedIds}
                 className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               />
             ))}

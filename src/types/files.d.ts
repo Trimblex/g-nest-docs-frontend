@@ -1,5 +1,5 @@
 export type MoveOperation = {
-  sourceId: string;
+  sourceIds: string[];
   targetId: string;
   sourceName: string;
 } | null;

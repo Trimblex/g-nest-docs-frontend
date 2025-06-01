@@ -2,8 +2,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { FileInfoVO } from "@/interface/files";
-import { MoveIcon, PencilIcon, ShareIcon, TrashIcon } from "lucide-react";
+import {
+  Download,
+  DownloadIcon,
+  InfoIcon,
+  MoveIcon,
+  PencilIcon,
+  ShareIcon,
+  TrashIcon,
+} from "lucide-react";
 
 type MenuContentProps = {
   file: FileInfoVO;
@@ -13,17 +22,19 @@ type MenuContentProps = {
   onDelete: () => void;
   onShare: () => void;
   onMove: () => void;
+  onDownload: (fileIds: string[]) => void;
   onDetail: () => void;
 };
 
 export const MenuContent = ({
-  // file,
+  file,
   isContextMenu,
   position,
   onRename,
   onDelete,
   onShare,
   onMove,
+  onDownload,
   onDetail,
 }: MenuContentProps) => {
   return (
@@ -42,14 +53,17 @@ export const MenuContent = ({
       }
       className="rounded-lg"
     >
-      <DropdownMenuItem onClick={onDetail} className="gap-2">
-        <ShareIcon className="w-4 h-4" />
-        <span>查看详细信息</span>
+      <DropdownMenuItem onClick={() => onDownload([file.id])} className="gap-2">
+        <DownloadIcon className="w-4 h-4" />
+        <span>下载</span>
       </DropdownMenuItem>
+
       <DropdownMenuItem onClick={onShare} className="gap-2">
         <ShareIcon className="w-4 h-4" />
         <span>分享</span>
       </DropdownMenuItem>
+      <Separator />
+
       <DropdownMenuItem onClick={onRename} className="gap-2">
         <PencilIcon className="w-4 h-4" />
         <span>重命名</span>
@@ -58,6 +72,12 @@ export const MenuContent = ({
         <MoveIcon className="w-4 h-4" />
         <span>移动</span>
       </DropdownMenuItem>
+      <Separator />
+      <DropdownMenuItem onClick={onDetail} className="gap-2">
+        <InfoIcon className="w-4 h-4" />
+        <span>查看详细信息</span>
+      </DropdownMenuItem>
+      <Separator />
 
       <DropdownMenuItem onClick={onDelete} className="gap-2 text-destructive">
         <TrashIcon className="w-4 h-4" />

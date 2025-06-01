@@ -34,8 +34,10 @@ type FileRowProps = {
   onDelete: (ids: string[]) => void;
   onFolderClick: (fileId: string) => void;
   onMove: (ids: string[], parentId: string) => void;
+  onDownload: (fileId: string[]) => void;
   isSelected: boolean;
   onClick: (fileId: string, e: React.MouseEvent) => void;
+  selectedIds: string[];
 };
 
 export const FileRow = ({
@@ -46,8 +48,10 @@ export const FileRow = ({
   onDelete,
   onFolderClick,
   onMove,
+  onDownload,
   isSelected,
   onClick,
+  selectedIds,
 }: FileRowProps) => {
   const [isRenaming, setIsRenaming] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -67,7 +71,7 @@ export const FileRow = ({
     pendingMove,
     handleConfirmMove,
     setPendingMove,
-  } = useDragAndDrop(file, onMove);
+  } = useDragAndDrop(file, selectedIds, onMove, pathHierarchy);
 
   const handleContextMenu = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
@@ -171,9 +175,14 @@ export const FileRow = ({
           onContextMenu={handleContextMenu}
           onDoubleClick={handleDoubleClick}
           onClick={(e) => onClick(file.id, e)}
-          className={`${
-            file.type === "FOLDER" ? "cursor-pointer" : ""
-          } hover:bg-accent ${className}`}
+          className={cn(
+            `${
+              file.type === "FOLDER" ? "cursor-pointer" : ""
+            } hover:bg-accent ${className}`,
+            selectedIds.includes(file.id) &&
+              selectedIds.length > 1 &&
+              "bg-blue-50"
+          )}
         >
           <TableCell className="font-medium max-w-[240px]">
             <div className="flex items-center gap-2">
@@ -202,6 +211,7 @@ export const FileRow = ({
                 onDelete={() => setDeleteDialogOpen(true)}
                 onShare={() => setShareDialogOpen(true)}
                 onMove={() => setMoveDialogOpen(true)}
+                onDownload={onDownload}
                 onDetail={() => setDetailInfoDialogOpen(true)}
               />
             </DropdownMenu>
@@ -219,6 +229,7 @@ export const FileRow = ({
                 onDelete={() => setDeleteDialogOpen(true)}
                 onShare={() => setShareDialogOpen(true)}
                 onMove={() => setMoveDialogOpen(true)}
+                onDownload={onDownload}
                 onDetail={() => setDetailInfoDialogOpen(true)}
               />
             </DropdownMenu>

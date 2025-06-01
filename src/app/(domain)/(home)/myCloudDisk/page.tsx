@@ -14,12 +14,14 @@ import { useSearchParam } from "@/hooks/use-search-param";
 import { FileTable } from "./file-table";
 import { HeaderSection } from "./header-section";
 import { FileGrid } from "./file-grid";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Download, Move, Share, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog";
 import { MoveDialog } from "./move-dialog";
 import { ShareDialog } from "./share-dialog";
+import { useAuth } from "@/providers/auth-context";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function CloudDiskPage() {
   const [search] = useSearchParam();
   const router = useRouter();
@@ -55,6 +57,7 @@ export default function CloudDiskPage() {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const { token } = useAuth();
   useEffect(() => {
     const savedMode = localStorage.getItem("viewMode") as
       | "list"
@@ -117,13 +120,14 @@ export default function CloudDiskPage() {
     (fileId: string, e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-
       const isShift = e.shiftKey;
       const isCtrl = e.ctrlKey || e.metaKey;
+
       setSelectedIds((prev) => {
         let newSelected = [...prev];
         const filesIds = files.map((f) => f.id);
         const currentIndex = filesIds.indexOf(fileId);
+
         if (isShift && lastSelectedId) {
           const lastIndex = filesIds.indexOf(lastSelectedId);
           if (lastIndex > -1 && currentIndex > -1) {
@@ -140,12 +144,8 @@ export default function CloudDiskPage() {
           const index = newSelected.indexOf(fileId);
           index > -1 ? newSelected.splice(index, 1) : newSelected.push(fileId);
         } else {
-          newSelected =
-            newSelected.includes(fileId) && newSelected.length === 1
-              ? []
-              : [fileId];
+          newSelected = [fileId];
         }
-
         setLastSelectedId(fileId);
         return newSelected;
       });
@@ -357,6 +357,117 @@ export default function CloudDiskPage() {
     }
   };
 
+  const handleDownload = useCallback(async (ids: string[]) => {
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      toast.success("开始下载处理...");
+
+      const response = await fetch(`${API_BASE}/files/download`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ ids }),
+      });
+
+      // 处理错误响应
+      if (!response.ok || !response.body) {
+        const errorText = await response.text();
+        throw new Error(errorText || `下载失败，状态码: ${response.status}`);
+      }
+
+      console.log("Response Headers:");
+      for (const [key, value] of response.headers.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      // 优化文件名解析逻辑 - 兼容RFC 5987标准
+      const parseFileNameFromHeaders = (headers: Headers) => {
+        const contentDisposition = headers.get("Content-Disposition") || "";
+        console.log("Content-Disposition:", contentDisposition);
+
+        // 1. 优先解析RFC 5987标准格式 (filename*=UTF-8'')
+        const rfc5987Match = contentDisposition.match(
+          /filename\*=utf-8''([^;]+)/i
+        );
+        if (rfc5987Match && rfc5987Match[1]) {
+          try {
+            return decodeURIComponent(rfc5987Match[1]);
+          } catch (e) {
+            console.warn("RFC 5987文件名解码失败，使用原始值", e);
+            return rfc5987Match[1];
+          }
+        }
+
+        // 2. 次优解析带引号的格式 (filename="...")
+        const quotedMatch = contentDisposition.match(/filename="([^"]+)"/i);
+        if (quotedMatch && quotedMatch[1]) {
+          return quotedMatch[1].replace(/\\"/g, '"');
+        }
+
+        // 3. 最后解析无引号格式 (filename=...)
+        const unquotedMatch = contentDisposition.match(/filename=([^;]+)/i);
+        if (unquotedMatch && unquotedMatch[1]) {
+          return unquotedMatch[1];
+        }
+
+        // 4. 默认文件名
+        return "download.zip";
+      };
+
+      const fileName = parseFileNameFromHeaders(response.headers);
+      console.log("Parsed filename:", fileName);
+
+      // 使用流式API处理响应
+      const reader = response.body.getReader();
+      const contentLength = response.headers.get("Content-Length");
+      const stream = new ReadableStream({
+        async start(controller) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            controller.enqueue(value);
+          }
+          controller.close();
+        },
+      });
+
+      // 创建blob URL（兼容流式）
+      const blob = await new Response(stream).blob();
+      const url = window.URL.createObjectURL(blob);
+
+      // 创建下载链接
+      const link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      // 清理资源
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        toast.success(`下载完成: ${fileName}`);
+      }, 100);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "下载失败，请检查网络连接";
+      toast.error(errorMessage);
+      console.error("下载错误:", error);
+    }
+  }, []);
+
+  const handleBatchDownload = () => {
+    if (selectedIds.length === 0) {
+      toast.warning("请选择要下载的文件");
+      return;
+    }
+    handleDownload(selectedIds);
+  };
+
   return (
     <>
       <div className="p-6 space-y-5 max-w-7xl mx-auto">
@@ -410,6 +521,7 @@ export default function CloudDiskPage() {
                   onFolderClick={(id) => setCurrentFileId(id)}
                   pathHierarchy={pathHierarchy}
                   onMove={handleMove}
+                  onDownload={handleDownload}
                   hasMore={hasMore}
                   selectedIds={selectedIds}
                   onSelect={handleFileSelect}
@@ -424,6 +536,7 @@ export default function CloudDiskPage() {
                   onFolderClick={(id) => setCurrentFileId(id)}
                   pathHierarchy={pathHierarchy}
                   onMove={handleMove}
+                  onDownload={handleDownload}
                   hasMore={hasMore}
                   selectedIds={selectedIds}
                   onSelect={handleFileSelect}
@@ -440,24 +553,78 @@ export default function CloudDiskPage() {
 
         {/* 公共批量操作栏 */}
         {selectedIds.length > 1 && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-background p-4 rounded-lg shadow-lg border flex gap-4 items-center">
-            <span className="mr-4">已选择 {selectedIds.length} 个文件</span>
+          <div
+            className={`
+              fixed bottom-6 left-1/2 -translate-x-1/2 
+              bg-gray-300/50  dark:bg-gray-800/90 
+              backdrop-blur-lg backdrop-saturate-150
+              p-3 rounded-xl 
+              shadow-lg shadow-gray-400/20 dark:shadow-black/40
+              border border-gray-200 dark:border-gray-700
+              flex items-center gap-3
+              transition-all duration-300
+              animate-in fade-in slide-in-from-bottom-4
+              z-50
+            `}
+          >
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              已选择{" "}
+              <span className="font-bold text-primary">
+                {selectedIds.length}
+              </span>{" "}
+              个文件
+            </span>
+
+            <div className="h-5 border-l border-gray-300 dark:border-gray-600" />
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBatchDownload}
+                className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 transition-colors"
+              >
+                <Download className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span>下载</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toast.error("抱歉，此功能正在开发中~~~")}
+                className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/30 transition-colors"
+              >
+                <Share className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <span>分享</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowMoveDialog(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-green-50/50 dark:hover:bg-green-900/30 transition-colors"
+              >
+                <Move className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <span>移动</span>
+              </Button>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowDeleteDialog(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 transition-colors hover:shadow-md hover:shadow-red-500/10"
+              >
+                <Trash className="w-4 h-4" />
+                <span>删除</span>
+              </Button>
+            </div>
+
             <Button
               variant="ghost"
-              onClick={() => toast.error("抱歉，此功能正在开发中~~~")}
+              size="sm"
+              onClick={() => setSelectedIds([])}
+              className="ml-1 px-3 py-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
             >
-              批量分享
-            </Button>
-            <Button variant="ghost" onClick={() => setShowMoveDialog(true)}>
-              批量移动
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              批量删除
-            </Button>
-            <Button variant="outline" onClick={() => setSelectedIds([])}>
               取消选择
             </Button>
           </div>

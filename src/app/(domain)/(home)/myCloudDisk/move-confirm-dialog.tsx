@@ -34,13 +34,16 @@ export const MoveConfirmDialog = ({
           <div className="p-2 rounded-full bg-blue-500/20">
             <MoveIcon className="w-5 h-5 text-blue-500" />
           </div>
-          <AlertDialogTitle>确认移动文件</AlertDialogTitle>
+          <AlertDialogTitle>
+            {pendingMove?.sourceIds.length && pendingMove?.sourceIds.length > 1
+              ? "确认移动多个文件"
+              : "确认移动文件"}
+          </AlertDialogTitle>
         </div>
         <AlertDialogDescription className="text-muted-foreground">
-          即将移动{" "}
-          <span className="font-medium text-foreground">
-            {pendingMove?.sourceName}
-          </span>{" "}
+          {pendingMove?.sourceIds.length && pendingMove?.sourceIds.length > 1
+            ? `即将移动 ${pendingMove.sourceIds.length} 个文件`
+            : `即将移动 ${pendingMove?.sourceName}`}{" "}
           到 <span className="font-medium text-foreground">{targetName}</span>
         </AlertDialogDescription>
       </AlertDialogHeader>
