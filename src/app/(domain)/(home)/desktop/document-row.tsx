@@ -5,14 +5,17 @@ import { Building2Icon, CircleUserIcon } from "lucide-react";
 import { format } from "date-fns";
 import { DocumentMenu } from "./document-menu";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/providers/auth-context";
 
 interface DocumentRowProps {
   document: DocumentInfoVO;
+  loadData: () => void;
 }
 
-export const DocumentRow = ({ document }: DocumentRowProps) => {
+export const DocumentRow = ({ document, loadData }: DocumentRowProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
 
   const preserveQueryParams = () => {
     // 克隆现有的查询参数
@@ -43,15 +46,20 @@ export const DocumentRow = ({ document }: DocumentRowProps) => {
         ) : (
           <CircleUserIcon className="size-4" />
         )}
-        {document.organizationId ? "组织" : "个人"}
+        {document.organizationId
+          ? `${document.ownerId === user?.id ? "你" : document.ownerName}（${
+              document.organizationName
+            }）`
+          : "你"}
       </TableCell>
       <TableCell className="text-muted-foreground hidden md:table-cell">
         {format(new Date(document.createdAt), "yyyy年MM月dd日 HH:mm")}
       </TableCell>
       <TableCell className="flex ml-auto justify-end">
         <DocumentMenu
-          documentId={document.id}
+          document={document}
           title={document.title}
+          loadData={loadData}
           onNewTab={() => window.open(`/documents/${document.id}`, "_blank")}
         />
       </TableCell>

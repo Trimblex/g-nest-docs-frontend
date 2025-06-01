@@ -16,13 +16,15 @@ import { RemoveDialog } from "../../documents/[documentId]/remove-dialog";
 import { RenameDialog } from "../../documents/[documentId]/rename-dialog";
 
 interface DocumentMenuProps {
-  documentId: string;
+  document: DocumentInfoVO;
   title: string;
+  loadData: () => void;
   onNewTab: (id: string) => void;
 }
 
 export const DocumentMenu = ({
-  documentId,
+  document,
+  loadData,
   title,
   onNewTab,
 }: DocumentMenuProps) => {
@@ -34,7 +36,11 @@ export const DocumentMenu = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
-        <RenameDialog documentId={documentId} initialTitle={title}>
+        <RenameDialog
+          document={document}
+          initialTitle={title}
+          loadData={loadData}
+        >
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
             onClick={(e) => e.stopPropagation()}
@@ -43,7 +49,7 @@ export const DocumentMenu = ({
             重命名
           </DropdownMenuItem>
         </RenameDialog>
-        <RemoveDialog documentId={documentId}>
+        <RemoveDialog document={document} loadData={loadData}>
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
             onClick={(e) => e.stopPropagation()}
@@ -53,7 +59,7 @@ export const DocumentMenu = ({
           </DropdownMenuItem>
         </RemoveDialog>
 
-        <DropdownMenuItem onClick={() => onNewTab(documentId)}>
+        <DropdownMenuItem onClick={() => onNewTab(document.id)}>
           <ExternalLinkIcon className="size-4 mr-2" />
           从新窗口打开
         </DropdownMenuItem>

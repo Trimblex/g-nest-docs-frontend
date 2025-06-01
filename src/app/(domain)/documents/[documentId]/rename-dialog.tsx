@@ -18,32 +18,41 @@ import { GNestResponse } from "@/interface/common";
 import { AxiosError } from "axios";
 
 interface RenameDialogProps {
-  documentId: string;
+  document: DocumentInfoVO;
   initialTitle: string;
+  setInitialTitle?: React.Dispatch<React.SetStateAction<string>>;
   children: React.ReactNode;
+  loadData?: () => void;
 }
 
 export const RenameDialog = ({
-  documentId,
+  document,
   initialTitle,
+  setInitialTitle,
   children,
+  loadData,
 }: RenameDialogProps) => {
   const [isRenaming, setIsRenaming] = useState(false);
 
   const [title, setTitle] = useState(initialTitle);
   const [open, setOpen] = useState(false);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault;
+    e.preventDefault();
     setIsRenaming(true);
     axios
-      .post(`/documents/${documentId}`, { title: title.trim() || "未命名" })
+      .put(`/documents/${document.id}`, { title: title.trim() || "未命名" })
+      .then(() => {
+        document.title = title.trim() || "未命名";
+        toast.success("重命名成功");
+      })
       .catch((err: AxiosError<GNestResponse<null>, any>) => {
         toast.error(err.response?.data.message);
       })
-      .then(() => toast.success("重命名成功"))
       .finally(() => {
         setIsRenaming(false);
         setOpen(false);
+        loadData && loadData();
+        setInitialTitle && setInitialTitle(title.trim() || "未命名");
       });
   };
 

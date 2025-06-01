@@ -13,31 +13,42 @@ import {
 } from "../../../../components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "@/config/axiosConfig";
 import { GNestResponse } from "@/interface/common";
 import { AxiosError } from "axios";
 
 interface RemoveDialogProps {
-  documentId: string;
+  document: DocumentInfoVO;
   children: React.ReactNode;
+  loadData?: () => void;
 }
 
-export const RemoveDialog = ({ documentId, children }: RemoveDialogProps) => {
+export const RemoveDialog = ({
+  document,
+  children,
+  loadData,
+}: RemoveDialogProps) => {
   const router = useRouter();
   const [isRemoving, setIsRemoving] = useState(false);
-
+  const pathname = usePathname();
   const handleRemove = () => {
+    console.log("remove");
     axios
-      .delete(`/documents/${documentId}`)
+      .delete(`/documents/${document.id}`)
       .then(() => {
         toast.success("删除成功");
-        router.push("/desktop");
+        if (!pathname.startsWith("/desktop")) {
+          router.push("/desktop");
+        }
       })
       .catch((err: AxiosError<GNestResponse<null>, any>) => {
         toast.error(err.response?.data.message);
       })
-      .finally(() => setIsRemoving(false));
+      .finally(() => {
+        setIsRemoving(false);
+        loadData && loadData();
+      });
   };
 
   return (

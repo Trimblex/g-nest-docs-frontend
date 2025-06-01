@@ -9,19 +9,65 @@ import {
 } from "@/components/ui/table";
 import { DocumentRow } from "./document-row";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useSearchParam } from "@/hooks/use-search-param";
+import { useOrg } from "@/providers/org-context";
+import axios from "@/config/axiosConfig";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { GNestResponse } from "@/interface/common";
 
-interface DocumentsTableProps {
-  documents: DocumentInfoVO[] | undefined;
-  nextCursor: string;
-  loadMore: (cursor: string, pageSize: number) => void;
-  hasMore: boolean;
-}
-export const DocumentsTable = ({
-  documents,
-  nextCursor,
-  loadMore,
-  hasMore,
-}: DocumentsTableProps) => {
+interface DocumentsTableProps {}
+export const DocumentsTable = ({}: DocumentsTableProps) => {
+  const [documents, setDocuments] = useState<DocumentInfoVO[]>([]);
+  const [nextCursor, setNextCursor] = useState("0");
+  const [hasMore, setHasMore] = useState(false);
+  const [search] = useSearchParam();
+  const { currentOrg, switchOrg } = useOrg();
+
+  const loadData = () => {
+    axios
+      .get("/documents/paginated", {
+        params: {
+          search,
+          pageSize: 5,
+        },
+      })
+      .then((res) => {
+        setDocuments(res.data.results);
+        setNextCursor(res.data.nextCursor);
+        setHasMore(res.data.hasMore);
+      })
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      });
+  };
+  useEffect(() => {
+    loadData();
+  }, [currentOrg, search]);
+
+  const loadMore = (cursor: string, pageSize: number) => {
+    axios
+      .get("/documents/paginated", {
+        params: {
+          search,
+          pageSize,
+          cursor,
+        },
+      })
+      .then((res) => {
+        setDocuments(documents.concat(res.data.results));
+        setNextCursor(res.data.nextCursor);
+        setHasMore(res.data.hasMore);
+      })
+      .catch((err: AxiosError<GNestResponse<null>, any>) => {
+        toast.error(err.response?.data.message);
+      });
+  };
+
+  useEffect(() => {
+    switchOrg(currentOrg?.id ?? null);
+  }, []);
   return (
     <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
       {documents === undefined ? (
@@ -52,7 +98,11 @@ export const DocumentsTable = ({
           ) : (
             <TableBody>
               {documents.map((document) => (
-                <DocumentRow key={document.id} document={document} />
+                <DocumentRow
+                  key={document.id}
+                  document={document}
+                  loadData={loadData}
+                />
               ))}
             </TableBody>
           )}

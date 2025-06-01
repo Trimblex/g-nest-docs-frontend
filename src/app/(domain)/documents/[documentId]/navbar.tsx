@@ -80,7 +80,7 @@ export const Navbar = ({ data }: NavbarProps) => {
   const router = useRouter();
   const { editor } = useEditorStore();
   const [isImport, setIsImport] = useState(false);
-
+  const [initialTitle, setInitialTitle] = useState(data.title);
   const onSaveDocx = useCallback(async () => {
     try {
       if (!editor) {
@@ -223,8 +223,9 @@ export const Navbar = ({ data }: NavbarProps) => {
                     </MenubarItem>
                     <MenubarSeparator />
                     <RenameDialog
-                      documentId={data.id}
-                      initialTitle={data.title}
+                      document={data}
+                      initialTitle={initialTitle}
+                      setInitialTitle={setInitialTitle}
                     >
                       <MenubarItem
                         onClick={(e) => e.stopPropagation()}
@@ -234,7 +235,7 @@ export const Navbar = ({ data }: NavbarProps) => {
                         重命名
                       </MenubarItem>
                     </RenameDialog>
-                    <RemoveDialog documentId={data.id}>
+                    <RemoveDialog document={data}>
                       <MenubarItem
                         onClick={(e) => e.stopPropagation()}
                         onSelect={(e) => e.preventDefault()}
