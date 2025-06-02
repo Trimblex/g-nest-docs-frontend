@@ -116,7 +116,7 @@ export const DetailInfoDialog = ({
               <InfoItem
                 icon={FileText}
                 label="文件大小"
-                value={file.size || "-"}
+                value={`${file.size} 字节` || "-"}
               />
             )}
           </div>

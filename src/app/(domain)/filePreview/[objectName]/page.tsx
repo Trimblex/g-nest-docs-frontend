@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner";
 import axios from "@/config/axiosConfig";
 import { FileInfoVO } from "@/interface/files";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatFileSize } from "@/lib/utils";
 
 export default function FilePreviewPage() {
   const params = useParams();
@@ -30,13 +30,6 @@ export default function FilePreviewPage() {
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   // 格式化文件大小
-  const formatFileSize = useCallback((bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  }, []);
 
   // 获取文件数据
   const fetchFileData = useCallback(

@@ -6,7 +6,7 @@ import { MenuContent } from "./menu-content";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog";
 import { MoveConfirmDialog } from "./move-confirm-dialog";
 import { useDragAndDrop } from "@/hooks/use-drag-drop";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, formatFileSize } from "@/lib/utils";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ShareDialog } from "./share-dialog";
 import { MoveDialog } from "./move-dialog";
@@ -197,7 +197,7 @@ export const FileRow = ({
           <TableCell>
             {file.type === "FOLDER" ? "文件夹" : file.fileType?.toUpperCase()}
           </TableCell>
-          <TableCell>{file.size}</TableCell>
+          <TableCell>{formatFileSize(file.size ?? 0)}</TableCell>
           <TableCell>{formatDate(file.modifiedAt)}</TableCell>
           <TableCell className="text-right w-[60px]">
             <DropdownMenu>

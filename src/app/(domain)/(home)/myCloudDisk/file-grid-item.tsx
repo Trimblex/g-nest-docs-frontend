@@ -6,7 +6,7 @@ import { MenuContent } from "./menu-content";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog";
 import { MoveConfirmDialog } from "./move-confirm-dialog";
 import { useDragAndDrop } from "@/hooks/use-drag-drop";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatFileSize } from "@/lib/utils";
 import { ShareDialog } from "./share-dialog";
 import { MoveDialog } from "./move-dialog";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
@@ -220,7 +220,9 @@ export const FileGridItem = ({
             />
             <div className="text-xs text-muted-foreground/80 space-y-0.5">
               <p className="truncate">{formatDate(file.modifiedAt)}</p>
-              {file.type === "FILE" && <p className="font-mono">{file.size}</p>}
+              {file.type === "FILE" && (
+                <p className="font-mono">{formatFileSize(file.size ?? 0)}</p>
+              )}
             </div>
           </div>
           {/* 选中指示器 */}
