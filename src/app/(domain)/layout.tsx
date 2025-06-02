@@ -9,10 +9,8 @@ export default function DomainLayout({
 }>) {
   return (
     <NuqsAdapter>
-      <CustomClientProvider>
-        <Toaster />
-        {children}
-      </CustomClientProvider>
+      <Toaster />
+      <CustomClientProvider>{children}</CustomClientProvider>
     </NuqsAdapter>
   );
 }

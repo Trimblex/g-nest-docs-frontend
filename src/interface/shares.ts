@@ -6,6 +6,7 @@ export interface ShareInfoBO {
 }
 
 export interface ShareCheckedVO {
+  objectName: string;
   url: string;
   fileName: string;
 }
